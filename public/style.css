@@ -1,0 +1,106 @@
+/* ページ全体のデザイン */
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* 中央揃え用のコンテナ */
+.container {
+    text-align: center;
+}
+
+/* ログインボックス */
+.login-box {
+    background-color: #121212;
+    padding: 30px;
+    border-radius: 8px;
+    width: 350px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    border: 1px solid gray; /* 白い枠線を追加 */
+}
+
+/* Instagramのロゴ風テキスト */
+.logo {
+    display: block;
+    width: 175px;
+    height: auto;
+    margin: 0 auto 20px;
+}
+
+/* 入力ボックス */
+input {
+    width: 80%;
+    padding: 10px;
+    margin: 8px auto;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #222;
+    color: white;
+}
+
+/* ログインボタン */
+.login-btn {
+    .login-btn {
+        pointer-events: auto;
+    }
+    width: 100%;
+    padding: 10px;
+    background-color: #0095f6;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+   
+}
+
+/* 区切りの "または" */
+.or {
+    margin: 8px 0;
+    color: #aaa;
+    font-size: 10px;
+}
+
+/* Facebookログインボタン */
+.fb-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #1877f2;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* パスワード忘れた場合 */
+.forgot-password {
+    margin-top: 10px;
+    font-size: 12px;
+    
+}
+
+/* 新規登録ボックス */
+.signup-box a {
+    color: #0095f6;    /* Instagramの青 */
+    font-weight: bold; /* 太字にする（オプション） */
+    text-decoration: none; /* 下線を消す */
+}
+
+.signup-box a:hover {
+    text-decoration: underline; /* マウスを乗せたときに下線を表示 */
+}
+
+/* ダウンロードボタン */
+.download {
+    margin-top: 200px;
+    font-size: 7px;
+
+}
