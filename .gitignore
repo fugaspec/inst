@@ -1,2 +1,9 @@
+# node_modulesを無視する
 node_modules/
+
+# Firebaseサービスアカウントの秘密鍵を無視する
 inst-732a8-firebase-adminsdk-fbsvc-8891993b0a.json
+
+# 他の一時ファイルやOS固有のファイル
+.DS_Store
+.env
